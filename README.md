@@ -93,7 +93,7 @@ Demo/
 **대상**: 개발팀, CTO, 기술 리드
 
 **기술 스택**:
-- Frontend: React Native, Next.js
+- Frontend: Unity 2022.3 LTS, Next.js
 - Backend: Node.js + NestJS, GraphQL
 - Database: PostgreSQL 15, Redis 7
 - Cloud: AWS (EKS, RDS, S3)

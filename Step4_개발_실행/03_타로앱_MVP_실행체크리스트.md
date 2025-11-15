@@ -163,17 +163,12 @@
 
 ### Frontend
 ```
-✅ React Native (크로스 플랫폼)
-   - 빠른 개발
-   - 단일 코드베이스
-   - 큰 커뮤니티
-
-또는
-
-✅ Native (Swift + Kotlin)
-   - 최고의 성능
-   - 플랫폼별 최적화
-   - 더 나은 사용자 경험
+✅ Unity 2022.3 LTS (크로스 플랫폼)
+   - iOS, Android, WebGL, Desktop 단일 코드베이스
+   - 3D 그래픽 및 고급 애니메이션 우위
+   - AR Foundation으로 ARKit/ARCore 통합
+   - 물리 기반 카드 인터랙션 구현 용이
+   - IL2CPP로 네이티브 수준 성능
 ```
 
 ### Backend

@@ -570,8 +570,8 @@ kubectl rollout status deployment/api
 - [Architecture Decision Records](./docs/adr/)
 
 ### External Documentation
+- [Unity Docs](https://docs.unity3d.com/Manual/index.html)
 - [NestJS Docs](https://docs.nestjs.com)
-- [React Native Docs](https://reactnative.dev)
 - [Next.js Docs](https://nextjs.org/docs)
 - [PostgreSQL Docs](https://www.postgresql.org/docs/15/)
 - [Redis Docs](https://redis.io/documentation)
