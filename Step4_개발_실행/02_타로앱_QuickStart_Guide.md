@@ -7,7 +7,14 @@
 
 ### Required Software
 ```bash
-# Node.js 20 LTS
+# Unity Hub & Unity Editor
+Unity Hub --version  # 3.x.x
+Unity Editor 2022.3 LTS
+
+# Visual Studio 2022 (Windows) or Rider (Cross-platform)
+# Xcode 14+ (macOS, for iOS builds)
+
+# Node.js 20 LTS (Backend & Web)
 node --version  # v20.x.x
 
 # Docker Desktop
@@ -35,7 +42,7 @@ kubectl version  # 1.28.x
 ```bash
 # Clone repositories
 git clone https://github.com/tarotmind/backend.git
-git clone https://github.com/tarotmind/frontend-mobile.git
+git clone https://github.com/tarotmind/unity-client.git
 git clone https://github.com/tarotmind/frontend-web.git
 
 # Backend setup
@@ -44,11 +51,16 @@ npm install
 cp .env.example .env
 # Edit .env with your local settings
 
-# Mobile app setup
-cd ../frontend-mobile
-npm install
-cd ios && pod install  # iOS only
-cd ..
+# Unity Client setup
+cd ../unity-client
+# Open with Unity Hub → Select Unity 2022.3 LTS
+# Unity will automatically resolve Package Manager dependencies
+# Install required packages:
+#   - Unity UI Toolkit
+#   - DOTween Pro (Asset Store)
+#   - Unity IAP
+#   - AR Foundation
+#   - Firebase SDK
 
 # Web app setup
 cd ../frontend-web
@@ -133,10 +145,18 @@ SENTRY_DSN=https://your-sentry-dsn
 DATADOG_API_KEY=your-datadog-key
 ```
 
-#### Mobile App (.env)
-```env
-API_URL=http://localhost:3000
-ENABLE_DEV_MENU=true
+#### Unity Client (Assets/Resources/config.json)
+```json
+{
+  "API_URL": "http://localhost:3000",
+  "ENABLE_DEV_MODE": true,
+  "PLATFORM": "Development"
+}
+```
+
+또는 Unity Build Settings → Player Settings → Scripting Define Symbols:
+```
+DEVELOPMENT_BUILD;ENABLE_DEBUG_LOGS
 ```
 
 #### Web App (.env.local)
@@ -158,11 +178,13 @@ npm run dev
 # API running at http://localhost:3000
 # GraphQL Playground at http://localhost:3000/graphql
 
-# Terminal 2: Mobile App (iOS)
-cd frontend-mobile
-npm run ios
-# Or for Android:
-npm run android
+# Terminal 2: Unity Client
+# Open Unity Hub → Open Project → unity-client
+# Unity Editor에서 Play 버튼 클릭 (Editor Play Mode)
+#
+# 실기기 테스트:
+# - iOS: File → Build Settings → iOS → Build and Run (Xcode 필요)
+# - Android: File → Build Settings → Android → Build and Run (Android SDK 필요)
 
 # Terminal 3: Web App
 cd frontend-web
@@ -194,11 +216,16 @@ npm run migration:run
 npm run migration:revert
 npm run schema:sync  # Sync schema (dev only!)
 
-# Mobile
-npm run ios          # Run on iOS simulator
-npm run android      # Run on Android emulator
-npm run test         # Run tests
-npm run lint         # Run ESLint
+# Unity Client
+# Unity Editor 내에서:
+# - Play Mode: Ctrl/Cmd + P
+# - Build: Ctrl/Cmd + B
+# - Run Tests: Window → General → Test Runner
+
+# Unity CLI (자동화용)
+Unity -quit -batchmode -projectPath ./unity-client -executeMethod BuildScript.BuildIOS
+Unity -quit -batchmode -projectPath ./unity-client -executeMethod BuildScript.BuildAndroid
+Unity -quit -batchmode -projectPath ./unity-client -runTests -testPlatform playmode
 
 # Web
 npm run dev          # Start development server
@@ -251,54 +278,93 @@ npm run test:e2e  # Cypress tests
 
 ---
 
-## 📱 Mobile Development Tips
+## 🎮 Unity Development Tips
 
-### iOS Specific
+### iOS Build (macOS only)
 
 ```bash
-# Clear build cache
-cd ios
-rm -rf build/
-pod cache clean --all
+# Unity에서 iOS 빌드 후 Xcode 프로젝트 생성
+# File → Build Settings → iOS → Build
+
+# Xcode에서 프로젝트 열기
+cd Builds/iOS
+open Unity-iPhone.xcodeproj
+
+# CocoaPods 의존성 설치 (Firebase 등)
 pod install
+open Unity-iPhone.xcworkspace
 
-# Fix common issues
-cd ..
-npx react-native-clean-project
+# 실기기에 배포
+# Xcode → Product → Destination → Your Device
+# Xcode → Product → Run
 ```
 
-### Android Specific
+### Android Build
 
 ```bash
-# Clear build cache
-cd android
-./gradlew clean
-cd ..
+# Unity에서 Android 빌드
+# File → Build Settings → Android → Build
 
-# Start emulator from command line
-emulator -avd Pixel_4_API_30
+# Gradle 빌드 (CLI)
+cd Builds/Android
+./gradlew assembleDebug
 
-# Reverse port for localhost API access
-adb reverse tcp:3000 tcp:3000
+# APK 설치
+adb install -r app-debug.apk
+
+# 로그 확인
+adb logcat Unity:D *:S
 ```
 
-### React Native Debugging
+### Unity Debugging
 
-```javascript
-// Enable Flipper
-import {Flipper} from 'react-native-flipper';
+```csharp
+// Unity Console 로그
+Debug.Log("일반 로그");
+Debug.LogWarning("경고");
+Debug.LogError("에러");
 
-if (__DEV__) {
-  Flipper.init();
+// 조건부 컴파일
+#if UNITY_EDITOR
+    Debug.Log("에디터에서만 실행");
+#endif
+
+// Visual Studio Debugger 연결
+// Unity → Edit → Preferences → External Tools → Visual Studio
+// Visual Studio → Debug → Attach Unity Debugger
+
+// Unity Profiler
+// Window → Analysis → Profiler
+// Play Mode에서 성능 분석
+```
+
+### Unity Performance Tips
+
+```csharp
+// Object Pooling (빈번한 생성/삭제 방지)
+public class ObjectPool : MonoBehaviour {
+    private Queue<GameObject> pool = new Queue<GameObject>();
+
+    public GameObject GetObject() {
+        if (pool.Count > 0) {
+            return pool.Dequeue();
+        }
+        return Instantiate(prefab);
+    }
+
+    public void ReturnObject(GameObject obj) {
+        obj.SetActive(false);
+        pool.Enqueue(obj);
+    }
 }
 
-// Redux DevTools
-import {composeWithDevTools} from 'redux-devtools-extension';
-
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(...middleware))
-);
+// Coroutine으로 프레임 분산
+IEnumerator LoadCardsAsync() {
+    foreach (var card in cards) {
+        LoadCard(card);
+        yield return null; // 다음 프레임으로 넘김
+    }
+}
 ```
 
 ---
@@ -428,17 +494,34 @@ cd backend
 npm run build
 # Output in dist/
 
-# Mobile (iOS)
-cd frontend-mobile/ios
-fastlane beta  # TestFlight
-fastlane release  # App Store
+# Unity (iOS)
+# Unity Editor:
+# 1. File → Build Settings → iOS
+# 2. Player Settings:
+#    - Bundle Identifier: com.tarotmind.app
+#    - Version: 1.0.0
+#    - IL2CPP, ARM64
+# 3. Build → Generate Xcode Project
+# 4. Xcode에서 Archive → Upload to App Store Connect
 
-# Mobile (Android)
-cd frontend-mobile/android
-./gradlew bundleRelease
-# Output in android/app/build/outputs/bundle/release/
+# Unity (Android)
+# Unity Editor:
+# 1. File → Build Settings → Android
+# 2. Player Settings:
+#    - Package Name: com.tarotmind.app
+#    - Version: 1.0.0
+#    - IL2CPP, ARM64
+#    - Keystore 설정
+# 3. Build App Bundle (AAB)
+# 4. Google Play Console에 업로드
 
-# Web
+# Unity (WebGL)
+# Unity Editor:
+# 1. File → Build Settings → WebGL
+# 2. Build
+# 3. Output을 웹 서버에 배포
+
+# Web (Next.js)
 cd frontend-web
 npm run build
 npm run export  # Static export
@@ -527,21 +610,45 @@ docker ps | grep postgres
 docker restart tarotmind-postgres
 ```
 
-#### iOS Build Failed
+#### Unity iOS Build Failed
 ```bash
-cd ios
+# Unity Library 폴더 재생성
+rm -rf Library/
+# Unity Editor 재시작 후 프로젝트 다시 열기
+
+# Xcode DerivedData 삭제
+rm -rf ~/Library/Developer/Xcode/DerivedData
+
+# CocoaPods 재설치
+cd Builds/iOS
 pod deintegrate
 pod cache clean --all
-rm -rf ~/Library/Developer/Xcode/DerivedData
 pod install
 ```
 
-#### Android Build Failed
+#### Unity Android Build Failed
 ```bash
-cd android
-./gradlew clean
+# Unity Library 폴더 재생성
+rm -rf Library/
+
+# Gradle 캐시 삭제
 rm -rf ~/.gradle/caches/
-./gradlew build
+
+# Unity Editor:
+# Edit → Preferences → External Tools
+# - JDK, SDK, NDK 경로 재설정
+```
+
+#### Unity General Issues
+```bash
+# Package Manager 오류
+# Window → Package Manager → 우측 상단 톱니바퀴 → Reset Packages
+
+# 컴파일 오류
+# Assets → Reimport All
+
+# Scene이 열리지 않음
+# Assets → Refresh (Ctrl/Cmd + R)
 ```
 
 ---

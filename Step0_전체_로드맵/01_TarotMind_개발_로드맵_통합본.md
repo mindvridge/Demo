@@ -95,49 +95,58 @@
   - DB 스키마 설계 및 구축 (QuickStart_Guide의 DB 스키마 참조)
   - 인증 시스템 (JWT 기반)
   - 기본 API 구조 (NestJS + TypeORM)
-  - 모바일 프로젝트 초기화 (React Native/Flutter)
+  - Unity 프로젝트 초기화 (Unity 2022.3 LTS)
+  - Unity 개발 환경 설정 (Visual Studio/Rider 연동)
 
 **Sprint 3-4 (Weeks 3-4): 핵심 기능 I**
 - **참조**: 타로리딩_플로우_기획서.md의 "Step 1-3"
 - **화면**: 타로리딩_UX플로우_화면설계서.md의 "S1.01~S3.06"
 - **개발 내용**:
-  - 타로 카드 데이터 구조 (78장 메이저/마이너 아르카나)
-  - 카드 섞기 및 선택 로직
+  - 타로 카드 데이터 구조 (78장 메이저/마이너 아르카나, ScriptableObjects)
+  - Unity Physics 기반 카드 셔플 시뮬레이션
   - 기본 스프레드 구현 (1카드, 3카드)
-  - 의도 설정 화면 (S1.01~S1.02)
+  - UI Toolkit으로 의도 설정 화면 구현 (S1.01~S1.02)
+  - 3D 카드 모델 및 Material/Shader 제작
 
 **Sprint 5-6 (Weeks 5-6): 핵심 기능 II**
 - **참조**: 타로리딩_플로우_기획서.md의 "Step 4-6"
 - **화면**: 타로리딩_UX플로우_화면설계서.md의 "S4.01~S6.04"
 - **개발 내용**:
-  - GPT-4 API 통합 (타로 해석 생성)
-  - 카드 배치 및 공개 애니메이션
-  - 해석 결과 화면 (S5.01~S5.03)
-  - 리딩 히스토리 저장 기능
+  - GPT-4 API 통합 (UnityWebRequest로 REST API 호출)
+  - DOTween Pro를 활용한 카드 배치 및 3D Flip 애니메이션
+  - 해석 결과 화면 UI Toolkit 구현 (S5.01~S5.03)
+  - 리딩 히스토리 (Unity PlayerPrefs + 클라우드 저장)
+  - Particle System으로 신비로운 시각 효과 추가
 
-**Sprint 7-8 (Weeks 7-8): AI 고도화**
+**Sprint 7-8 (Weeks 7-8): AI 고도화 & Unity 최적화**
 - **참조**: 타로앱_개발기획서.md의 "AI 기능 구현" 섹션
 - **개발 내용**:
-  - 사용자 프로필 기반 개인화
-  - 감정 분석 기능 (입력 텍스트 분석)
+  - 사용자 프로필 기반 개인화 (C# 알고리즘)
+  - 감정 분석 기능 (입력 텍스트 분석, API 연동)
   - 추천 스프레드 알고리즘
   - GPT-4 프롬프트 최적화 (정확도 향상)
+  - Unity Addressables로 리소스 최적화
+  - Object Pooling으로 메모리 관리 개선
 
 **Sprint 9-10 (Weeks 9-10): UI/UX 완성**
 - **참조**: 타로앱_UI디자인_컨셉_기획서.md (전체)
 - **화면**: 타로리딩_UX플로우_화면설계서.md의 모든 화면
 - **개발 내용**:
-  - 디자인 시스템 적용 (Celestial Harmony 컨셉)
-  - 애니메이션 및 인터랙션 (Lottie, Rive)
-  - 다크모드 구현
-  - 접근성 개선 (Accessibility)
+  - Unity UI Toolkit 디자인 시스템 구축 (Celestial Harmony 컨셉)
+  - Unity Animation Timeline으로 복잡한 시퀀스 제작
+  - Shader Graph로 커스텀 시각 효과 구현
+  - 다크모드 구현 (Theme Switching System)
+  - 접근성 개선 (UI 스케일 조절, 음성 안내)
 
 **Sprint 11-12 (Weeks 11-12): 테스트 & 최적화**
 - **참조**: 타로앱_MVP_실행체크리스트.md의 "테스트 체크리스트"
 - **개발 내용**:
-  - 단위 테스트 (Jest, Mocha)
-  - 통합 테스트 (E2E with Detox/Appium)
-  - 성능 최적화 (API 응답 시간, 렌더링)
+  - Unity Test Framework로 단위 테스트 (PlayMode, EditMode)
+  - Unity Test Runner로 통합 테스트
+  - Unity Profiler로 성능 분석 및 최적화
+  - 모바일 기기별 프레임율 최적화 (60fps 유지)
+  - IL2CPP 빌드로 성능 향상 및 보안 강화
+  - 메모리 누수 확인 및 수정
   - 버그 수정 및 안정화
 
 #### 📊 산출물
@@ -219,10 +228,13 @@
 **Weeks 29-36: 확장 기능 I**
 - **참조**: 예비창업패키지_선정률_극대화_전략.md의 "AR 기능"
 - **개발 내용**:
-  - AR 카드 뽑기 기능 (ARKit/ARCore)
+  - Unity AR Foundation으로 AR 카드 뽑기 기능 구현
+    - ARKit (iOS) 및 ARCore (Android) 지원
+    - 평면 감지 후 3D 카드 배치
+    - 손 제스처로 카드 선택
   - 추가 스프레드 (켈틱 크로스, 연애, 커리어)
   - 커뮤니티 기능 (리딩 공유, 댓글)
-  - 일일 카드 푸시 알림
+  - 일일 카드 푸시 알림 (Firebase Cloud Messaging)
 
 **Weeks 37-44: 확장 기능 II**
 - **참조**: 수익_모델_확정_계획서.md의 "전문가 마켓플레이스"
